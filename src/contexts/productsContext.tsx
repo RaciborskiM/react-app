@@ -24,6 +24,7 @@ interface ProductsData {
 
 interface ProductsDataContextType {
   productsData: ProductsData | undefined;
+  error: Error | undefined;
   setProductsPage: (page: number) => void;
   setProductsLimit: (limit: number) => void;
   fetchProductsData: (page: number, limit?: number) => void;
@@ -39,7 +40,7 @@ export const ProductsDataProvider: React.FC<{ children: ReactNode }> = ({
   const [productsData, setProductsData] = useState<ProductsData | undefined>(
     undefined,
   );
-
+  const [error, setError] = useState<Error>();
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page");
 
@@ -64,6 +65,7 @@ export const ProductsDataProvider: React.FC<{ children: ReactNode }> = ({
       const fetchedData = await response.json();
       setProductsData(fetchedData);
     } catch (error) {
+      setError(error as Error);
       console.error("Error fetching products data:", error);
     }
   };
@@ -76,6 +78,7 @@ export const ProductsDataProvider: React.FC<{ children: ReactNode }> = ({
     <DataContext.Provider
       value={{
         productsData,
+        error,
         setProductsPage,
         setProductsLimit,
         fetchProductsData,

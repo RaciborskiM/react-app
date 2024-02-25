@@ -8,6 +8,7 @@ import { Box, Pagination, Typography } from "@mui/material";
 import NumberInput from "./components/NumberInput/NumberInput";
 import Modal from "./components/Modal/Modal";
 import ProductsTable from "./components/ProductsTable/ProductsTable";
+
 import { Product } from "./types/types";
 
 function App() {
@@ -16,11 +17,15 @@ function App() {
   const productIndex = searchParams.get("id") || "";
 
   const [isModalOpen, openModalHandler, closeModalHandler] = useModal();
-  const { productsData, setProductsPage } = useProducts();
+  const { productsData, error, setProductsPage } = useProducts();
 
   const [selectedRow, setSelectedRow] = useState<Product>();
 
   const [productIndexNumber, setProductIndexNumber] = useState("");
+
+  if (!productsData && error) {
+    return <p>{error.message}</p>;
+  }
 
   if (!productsData) {
     return <p>Loading...</p>;
